@@ -1,0 +1,65 @@
+service: devops-qlcp-${opt:stage, 'staging'}
+
+custom:
+  stage: ${opt:stage, 'staging'}
+  region: "sa-east-1"
+  serverless-offline:
+    port: 6000
+  staging:
+    stage: staging
+  production:
+    stage: production
+  beta:
+    stage: beta
+  swaggerApi:
+    swagger: ${file(docs/swagger.yaml)}
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${self:custom.stage}
+  region: "sa-east-1"
+  environment:
+    AWS_DEPLOY_REGION: ${self:custom.region}
+    STAGE: ${self:custom.${self:custom.stage}.stage}
+  # deploymentBucket:
+  #   name: serverless.roberlove.deployment
+
+functions:
+# Autenticação/Login
+  login:
+    handler: src/functions/auth.login
+# CRUD Usuários
+  getUsers:
+    handler: src/functions/users.getUsers
+  createUser:
+    handler: src/functions/users.createUser
+  getUser:
+    handler: src/functions/users.getUser
+  editUser:
+    handler: src/functions/users.editUser
+  deleteUser:
+    handler: src/functions/users.deleteUser
+  editPasword:
+    handler: src/functions/users.editPasword
+
+resources:
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users-${opt:stage, 'staging'}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-swagger-api
+  
