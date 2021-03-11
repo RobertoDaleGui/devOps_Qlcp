@@ -1,0 +1,287 @@
+openapi: "3.0.0"
+
+info:
+  version: "1.0.0"
+  title: "Cadastro de clientes"
+  description: "Essa api foi criada para amostra de conhecimento técnico.
+
+
+  Não foi implementado um sistema de perfis de acesso, logo: edições, criações e exclusões são permitidas a todos os usuários criados."
+
+servers: 
+  - url: "https://h3h5agj1mi.execute-api.sa-east-1.amazonaws.com/staging"
+ 
+tags:
+  - name: Login
+    description: "Rota destinadas ao login do usuário."
+  - name: Usuário
+    description: "Rota destinada a consulta, criação, edição e exclusão de usuário(s)."
+
+paths:
+  /login:
+    post:
+      summary: "Login"
+      description: "Essa rota retornará o token para ser utilizado nas demais rotas."
+      tags: 
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reqLogin'
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/resLogin"
+        401:
+          description: "Não autorizado"
+          content:
+            application/json:
+              example: "Usuário e/ou senha inválidos."
+      x-attr-serverless:
+        functionName: getProfessions
+        cors: true
+  /user:
+    get:
+      summary: "Buscar todos os usuários"
+      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
+      tags: 
+        - "Usuário"
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getUsers"
+        404:
+          description: "Não encontrado"
+          content:
+            application/json:
+              example: "Nenhum usuário encontrado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+    post:
+      summary: "Inserir um novo usuário"
+      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
+      tags: 
+        - Usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/setUser'
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              example: "Usuário criado com sucesso."
+        409:
+          description: "Conflito"
+          content:
+            application/json:
+              example: "Já existe um usuário cadastrado com o e-mail informado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+  /user/{userId}:
+    get:
+      summary: "Buscar um usuário"
+      description: "Essa rota tem como finalidade retornar um usuário informando o seu id."
+      tags: 
+        - Usuário
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getUser"
+        404:
+          description: "Não encontrado"
+          content:
+            application/json:
+              example: "Usuário não encontrado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+    put:
+      summary: "Editar um usuário"
+      description: "Essa rota tem como finalidade a edição de um usuário."
+      tags: 
+        - Usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editUser'
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              example: "Usuário atualizado."
+        404:
+          description: "Não encontrado"
+          content:
+            application/json:
+              example: "Usuário não encontrado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+    delete:
+      summary: "Deletar um usuário"
+      description: "Essa rota tem como finalidade exclusão de um usuário."
+      tags: 
+        - Usuário
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              example: "Usuário deletado."
+        404:
+          description: "Não encontrado"
+          content:
+            application/json:
+              example: "Usuário não encontrado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+  /user/{userId}/changepassword:
+    put:
+      summary: "Redefinir uma senha"
+      description: "Essa rota tem como finalidade redefinir a senha do usuário."
+      tags: 
+        - Usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editPassword'
+      responses:
+        200:
+          description: "Requisição aceita"
+          content:
+            application/json:
+              example: "Senha atualizada."
+        404:
+          description: "Não encontrado"
+          content:
+            application/json:
+              example: "Usuário não encontrado."
+      x-attr-serverless:
+        functionName: getProfessionsByEntity
+        cors: true
+
+components:
+  schemas:
+    getProfessions:
+      properties:
+        message:
+          type: string
+          description: Retorno da API indicando sucesso ou falha
+          example: Solicitação aceita e bem sucedida.
+        body:
+          description: Array de profissões
+          items:
+            properties:
+              profissão:
+                type: string
+                description: Profissão do objeto
+                example: Administrador
+    reqLogin:
+      required:
+        - "login"
+        - "password"
+      properties:
+        login:
+          type: "string"
+          description: "Login do usuário."
+          example: "QLCP.User"
+        password:
+          type: "string"
+          description: "Senha do usuário.<br>É obrigatório possuir no mínimo 8 caracteres, sendo ao menos 1 caracter maiúsculo, 1 especial e ao menos um numérico."
+          example: "MinhaSenha[123]"
+    resLogin:
+      type: "string"
+      description: "Token de acesso para usar em outras rotas."
+      example: "1sd52-6541sd..."
+    getUsers:
+      items:
+        properties:
+          id:
+            type: "string"
+            description: "Id do usuário."
+            example: "1ds5-1asd5..."
+          name:
+            type: "string"
+            description: "Nome do usuário."
+            example: "Fulano de Tal"
+          email:
+            type: "string"
+            description: "E-mail do usuário."
+            example: "fulano@detal.com"
+    getUser:
+      properties:
+        id:
+          type: "string"
+          description: "Id do usuário."
+          example: "1ds5-1asd5..."
+        name:
+          type: "string"
+          description: "Nome do usuário."
+          example: "Fulano de Tal"
+        email:
+          type: "string"
+          description: "E-mail do usuário."
+          example: "fulano@detal.com"
+    setUser:
+      required:
+        - "name"
+        - "email"
+        - "password"
+      properties:
+        name:
+          type: "string"
+          description: "Nome do usuário."
+          example: "Fulano de Tal"
+        email:
+          type: "string"
+          description: "E-mail do usuário."
+          example: "fulano@detal.com"
+        password:
+          type: "string"
+          description: "
+          Senha do usuário<br>
+          Normas:
+          <li>8 caracteres;</li>
+          <li>Mínimo de 1 caracter alfabético maiúculo;</li>
+          <li>Mínimo de 1 caracter especial;</li>
+          <li>Mínimo de 1 caracter numérico.</li>"
+          example: "MinhaSenha[123]"
+    editUser:
+      properties:
+        name:
+          type: "string"
+          description: "Nome do usuário."
+          example: "Fulano de Tal"
+        email:
+          type: "string"
+          description: "E-mail do usuário."
+          example: "fulano@detal.com"
+    editPassword:
+      properties:
+        password:
+          type: "string"
+          description: "Nova senha do usuário"
+          example: "MinhaNovaSenha[123]"
