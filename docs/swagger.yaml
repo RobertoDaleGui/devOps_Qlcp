@@ -45,7 +45,7 @@ paths:
       x-attr-serverless:
         functionName: getProfessions
         cors: true
-  /user:
+  /users:
     get:
       summary: "Buscar todos os usuários"
       description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
@@ -91,7 +91,7 @@ paths:
       x-attr-serverless:
         functionName: getProfessionsByEntity
         cors: true
-  /user/{userId}:
+  /users/{userId}:
     get:
       summary: "Buscar um usuário"
       description: "Essa rota tem como finalidade retornar um usuário informando o seu id."
@@ -156,7 +156,7 @@ paths:
       x-attr-serverless:
         functionName: getProfessionsByEntity
         cors: true
-  /user/{userId}/changepassword:
+  /users/{userId}/changepassword:
     put:
       summary: "Redefinir uma senha"
       description: "Essa rota tem como finalidade redefinir a senha do usuário."
