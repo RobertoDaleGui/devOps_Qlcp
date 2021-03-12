@@ -1,0 +1,11 @@
+{
+    "origin": "",
+    "stage": "produtcion",
+    "options": {
+        "credentials": "arn:aws:iam::705296283647:role/lambda_invoke_function_assume_apigw_role"
+    },
+    "targets": {
+        "aqollnffb1": {},
+        "sbswzg50ca": {}
+    }
+  }

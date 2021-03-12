@@ -1,0 +1,44 @@
+image: roberlove/aws-ci-docker
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Deploy to production
+          deployment: production    
+          caches: 
+            - nodecustom
+            - yarn
+          script:
+            - yarn install
+            - sls deploy --stage production
+            - node_modules/.bin/deploy-aws --file ./config/apigateway/apiconfig.production.json --region sa-east-1
+    beta:
+      - step:
+          name: Deploy to staging
+          deployment: staging    
+          caches: 
+            - nodecustom
+            - yarn
+          script:
+            - yarn install
+            - sls deploy --stage beta
+            - node_modules/.bin/deploy-aws --file ./config/apigateway/apiconfig.beta.json --region sa-east-1
+    develop:
+      - step:
+          name: Deploy to staging
+          deployment: staging    
+          caches: 
+            - nodecustom
+            - yarn
+          script:
+            - yarn install
+            - sls deploy --stage staging 
+            - node_modules/.bin/deploy-aws --file ./config/apigateway/apiconfig.staging.json --region sa-east-1
+            - aws s3 cp ./docs/swagger.yaml s3://clients-roberlove/documentation/tmp/api-partner/staging/MUDE_O_NOME_DESTE_ARQUIVO.yaml --acl=public-read
+            - aws s3 cp ./docs/swagger.yaml s3://clients-roberlove/documentation/tmp/api/staging/MUDE_O_NOME_DESTE_ARQUIVO.yaml --acl=public-read 
+definitions:
+  caches:
+    nodecustom: ./node_modules
+    yarn: /usr/local/share/.cache/yarn
+            
