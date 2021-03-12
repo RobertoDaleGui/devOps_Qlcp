@@ -9,7 +9,7 @@ info:
   Não foi implementado um sistema de perfis de acesso, logo: edições, criações e exclusões são permitidas a todos os usuários criados."
 
 servers: 
-  - url: "https://5c1j3746xe.execute-api.sa-east-1.amazonaws.com/staging"
+  - url: "https://inthii0ge1.execute-api.sa-east-1.amazonaws.com/staging"
  
 tags:
   - name: Login
@@ -54,7 +54,7 @@ paths:
   /users:
     get:
       summary: "Buscar todos os usuários"
-      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
+      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário.<br>Não enviar payload!"
       tags: 
         - "Usuário"
       parameters:
@@ -99,7 +99,7 @@ paths:
           description: "Requisição aceita"
           content:
             application/json:
-              example: "Usuário criado com sucesso."
+              example: "Usuário criado."
         400:
           description: "Requisição inválida"
           content:
@@ -110,14 +110,14 @@ paths:
           description: "Conflito"
           content:
             application/json:
-              example: "Já existe um usuário cadastrado com o e-mail informado."
+              example: "O e-mail informado já está sendo usado por outro usuário"
       x-attr-serverless:
         functionName: createUser
         cors: true
   /users/{email}:
     get:
       summary: "Buscar um usuário"
-      description: "Essa rota tem como finalidade retornar um usuário informando o seu id."
+      description: "Essa rota tem como finalidade retornar um usuário informando o seu id.<br>Não enviar payload!"
       tags: 
         - Usuário
       parameters:
@@ -241,16 +241,22 @@ components:
       description: "Token de acesso para usar em outras rotas."
       example: "1sd52-6541sd..."
     getUsers:
-      items:
-        properties:
-          name:
-            type: "string"
-            description: "Nome do usuário."
-            example: "Fulano de Tal"
-          email:
-            type: "string"
-            description: "E-mail do usuário."
-            example: "fulano@detal.com"
+      properties:
+        Items:
+          items:
+            properties:
+              name:
+                type: "string"
+                description: "Nome do usuário."
+                example: "Fulano de Tal"
+              email:
+                type: "string"
+                description: "E-mail do usuário."
+                example: "fulano@detal.com"
+        Count:
+          type: "number"
+          description: "Contagem de usuários retornados."
+          example: "1"
     getUser:
       properties:
         id:

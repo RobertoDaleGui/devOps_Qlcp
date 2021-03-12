@@ -1,7 +1,7 @@
 'use strict';
 const { httpFactory } = require('../factory/responses/httpFactory')
 const awsService = require('../services/aws-sevice')
-const table = 'Users-staging'
+const table = process.env.TB_USER
 const validator = require('../validators/user')
 const bcrypt = require('bcryptjs')
 const { tokenValidator } = require('./auth')

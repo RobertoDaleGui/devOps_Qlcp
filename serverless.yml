@@ -25,10 +25,23 @@ provider:
   environment:
     AWS_DEPLOY_REGION: ${self:custom.region}
     AWS_DYNAMODB_VERSION: '2012-08-10'
+    TB_USER: Users-${self:custom.${self:custom.stage}.stage}
     JWT_SECRET: ${self:custom.${self:custom.stage}.jwtSecret}
     STAGE: ${self:custom.${self:custom.stage}.stage}
   # deploymentBucket:
   #   name: serverless.roberlove.deployment
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+      Resource:
+        - "arn:aws:dynamodb:sa-east-1:147813450025:table/${self:provider.environment.TB_USER}"
 
 functions:
 # Autenticação/Login

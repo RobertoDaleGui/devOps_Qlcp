@@ -2,17 +2,20 @@
 const { httpFactory } = require('../factory/responses/httpFactory')
 const awsService = require('../services/aws-sevice')
 const bcrypt = require('bcryptjs')
-const table = 'Users-staging'
+const table = process.env.TB_USER
 const validator = require('../validators/login')
 const jwt = require('jwt-simple')
 
 async function login (event) {
+  console.log(event)
   const body = JSON.parse(event.body)
   return validator.login(body)
     .then(() => {
+      console.log('Etapa 1')
       const { email, password } = body
       return awsService.getTableItem(table, 'email', email)
         .then(async res => {
+          console.log('Etapa 2: ', res)
           const user = res.Items[0]
           if (res.Count === 1) {
             const validPassword = await bcrypt.compare(password, res.Items[0].password)
@@ -27,12 +30,11 @@ async function login (event) {
           return httpFactory('E-mail ou senha inválidos', 401)
         })
     })
-    .catch(err => {
-      return httpFactory(err.details, 404)
-    })
+    .catch(err => httpFactory(err.details, 404))
 }
 
 async function tokenValidator (data) {
+  if (!data) return false
   const token = data.replace(/bearer /i, '')
   return new Promise((resolve, reject) => {
     jwt.decode(token, process.env.JWT_SECRET)

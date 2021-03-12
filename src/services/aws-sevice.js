@@ -32,8 +32,8 @@ async function setTableItem (TableName, data, key, validator) {
   return validator(data)
     .then(res => {
       return getTableItem(TableName, key, res[key])
-        .then(res => {
-          if (res.Count) {
+        .then(_res => {
+          if (_res.Count) {
             throw httpFactory('O e-mail informado já está sendo usado por outro usuário', 409)
           }
           const params = {
