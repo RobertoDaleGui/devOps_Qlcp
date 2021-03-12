@@ -9,7 +9,7 @@ info:
   Não foi implementado um sistema de perfis de acesso, logo: edições, criações e exclusões são permitidas a todos os usuários criados."
 
 servers: 
-  - url: "https://h3h5agj1mi.execute-api.sa-east-1.amazonaws.com/staging"
+  - url: "https://inthii0ge1.execute-api.sa-east-1.amazonaws.com/staging"
  
 tags:
   - name: Login
@@ -21,7 +21,7 @@ paths:
   /login:
     post:
       summary: "Login"
-      description: "Essa rota retornará o token para ser utilizado nas demais rotas."
+      description: "Essa rota retornará o token para ser utilizado como Bearer nas demais rotas."
       tags: 
         - Login
       requestBody:
@@ -37,20 +37,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/resLogin"
+        400:
+          description: "Requisição inválida"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
         401:
           description: "Não autorizado"
           content:
             application/json:
-              example: "Usuário e/ou senha inválidos."
+              example: "E-mail ou senha inválidos."
       x-attr-serverless:
-        functionName: getProfessions
+        functionName: login
         cors: true
-  /user:
+  /users:
     get:
       summary: "Buscar todos os usuários"
-      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
+      description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário.<br>Não enviar payload!"
       tags: 
         - "Usuário"
+      parameters:
+      - name: "limit"
+        in: "query"
+        description: "Envie esse parâmetro para limitar a quantidade de usuários retornados"
+        schema:
+          type: "number"
+      - name: "next"
+        in: "query"
+        description: "Envie esse parâmetro para retornar usuários a partir do valor informado."
+        schema:
+          type: "string"
       responses:
         200:
           description: "Requisição aceita"
@@ -64,7 +81,7 @@ paths:
             application/json:
               example: "Nenhum usuário encontrado."
       x-attr-serverless:
-        functionName: getProfessionsByEntity
+        functionName: getUsers
         cors: true
     post:
       summary: "Inserir um novo usuário"
@@ -82,21 +99,34 @@ paths:
           description: "Requisição aceita"
           content:
             application/json:
-              example: "Usuário criado com sucesso."
+              example: "Usuário criado."
+        400:
+          description: "Requisição inválida"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
         409:
           description: "Conflito"
           content:
             application/json:
-              example: "Já existe um usuário cadastrado com o e-mail informado."
+              example: "O e-mail informado já está sendo usado por outro usuário"
       x-attr-serverless:
-        functionName: getProfessionsByEntity
+        functionName: createUser
         cors: true
-  /user/{userId}:
+  /users/{email}:
     get:
       summary: "Buscar um usuário"
-      description: "Essa rota tem como finalidade retornar um usuário informando o seu id."
+      description: "Essa rota tem como finalidade retornar um usuário informando o seu id.<br>Não enviar payload!"
       tags: 
         - Usuário
+      parameters:
+      - name: "email"
+        in: "path"
+        required: true
+        description: "E-mail do usuário que deseja buscar"
+        schema:
+          type: "string"
       responses:
         200:
           description: "Requisição aceita"
@@ -110,13 +140,20 @@ paths:
             application/json:
               example: "Usuário não encontrado."
       x-attr-serverless:
-        functionName: getProfessionsByEntity
+        functionName: getUser
         cors: true
     put:
       summary: "Editar um usuário"
       description: "Essa rota tem como finalidade a edição de um usuário."
       tags: 
         - Usuário
+      parameters:
+      - name: "email"
+        in: "path"
+        required: true
+        description: "E-mail do usuário que deseja editar."
+        schema:
+          type: "string"
       requestBody:
         required: true
         content:
@@ -129,19 +166,32 @@ paths:
           content:
             application/json:
               example: "Usuário atualizado."
+        400:
+          description: "Requisição inválida"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
         404:
           description: "Não encontrado"
           content:
             application/json:
               example: "Usuário não encontrado."
       x-attr-serverless:
-        functionName: getProfessionsByEntity
+        functionName: editUser
         cors: true
     delete:
       summary: "Deletar um usuário"
       description: "Essa rota tem como finalidade exclusão de um usuário."
       tags: 
         - Usuário
+      parameters:
+      - name: "email"
+        in: "path"
+        required: true
+        description: "E-mail do usuário que deseja deletar."
+        schema:
+          type: string
       responses:
         200:
           description: "Requisição aceita"
@@ -154,33 +204,7 @@ paths:
             application/json:
               example: "Usuário não encontrado."
       x-attr-serverless:
-        functionName: getProfessionsByEntity
-        cors: true
-  /user/{userId}/changepassword:
-    put:
-      summary: "Redefinir uma senha"
-      description: "Essa rota tem como finalidade redefinir a senha do usuário."
-      tags: 
-        - Usuário
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/editPassword'
-      responses:
-        200:
-          description: "Requisição aceita"
-          content:
-            application/json:
-              example: "Senha atualizada."
-        404:
-          description: "Não encontrado"
-          content:
-            application/json:
-              example: "Usuário não encontrado."
-      x-attr-serverless:
-        functionName: getProfessionsByEntity
+        functionName: deleteUser
         cors: true
 
 components:
@@ -217,20 +241,22 @@ components:
       description: "Token de acesso para usar em outras rotas."
       example: "1sd52-6541sd..."
     getUsers:
-      items:
-        properties:
-          id:
-            type: "string"
-            description: "Id do usuário."
-            example: "1ds5-1asd5..."
-          name:
-            type: "string"
-            description: "Nome do usuário."
-            example: "Fulano de Tal"
-          email:
-            type: "string"
-            description: "E-mail do usuário."
-            example: "fulano@detal.com"
+      properties:
+        Items:
+          items:
+            properties:
+              name:
+                type: "string"
+                description: "Nome do usuário."
+                example: "Fulano de Tal"
+              email:
+                type: "string"
+                description: "E-mail do usuário."
+                example: "fulano@detal.com"
+        Count:
+          type: "number"
+          description: "Contagem de usuários retornados."
+          example: "1"
     getUser:
       properties:
         id:
@@ -269,6 +295,32 @@ components:
           <li>Mínimo de 1 caracter especial;</li>
           <li>Mínimo de 1 caracter numérico.</li>"
           example: "MinhaSenha[123]"
+    badRequest:
+      items:
+        properties:
+          message:
+            type: "string"
+            description: "Mensagem indicando os canpos incorretos."
+            example: "<field> is required"
+          path:
+            items:
+              type: "string"
+              description: "Descrição da posição do atributo"
+              example: "<field>"
+          type:
+            type: "string"
+            description: "Tipo de erro identificado"
+            example: "any.required"
+          context:
+            properties:
+              label:
+                type: "string"
+                description: "Nome do atributo"
+                example: "<field>"
+              key:
+                type: "string"
+                description: "Chave do atributo"
+                example: "<field>"
     editUser:
       properties:
         name:

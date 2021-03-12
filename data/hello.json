@@ -1,0 +1,96 @@
+{
+  "resource": "/bankStatuses/leadId/{leadId}/bank/{bank}",
+  "path": "/v1/staging/bankStatuses/leadId/1/bank/santander",
+  "httpMethod": "GET",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Cache-Control": "no-cache",
+    "Host": "api-partner.roberlove.com.br",
+    "Postman-Token": "85527bfc-6701-4d55-ac3a-1a430771283c",
+    "User-Agent": "PostmanRuntime/7.18.0",
+    "X-Amzn-Trace-Id": "Root=1-5dba077a-03391cb03ab4f2d69cc4a870",
+    "X-Forwarded-For": "187.37.217.26",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept": [
+      "*/*"
+    ],
+    "Accept-Encoding": [
+      "gzip, deflate"
+    ],
+    "Cache-Control": [
+      "no-cache"
+    ],
+    "Host": [
+      "api-partner.roberlove.com.br"
+    ],
+    "Postman-Token": [
+      "85527bfc-6701-4d55-ac3a-1a430771283c"
+    ],
+    "User-Agent": [
+      "PostmanRuntime/7.18.0"
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-5dba077a-03391cb03ab4f2d69cc4a870"
+    ],
+    "X-Forwarded-For": [
+      "187.37.217.26"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": {
+    "queryString1": "this is queryString1",
+    "queryString2": "this is queryString2"
+  },
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "path1": "this is path1",
+    "path2": "this is path2"
+  },
+  "stageVariables": {
+    "stage": "staging",
+    "leadsServerUrl": "cluster.roberlove.com.br:8061",
+    "serverUrl": "cluster.roberlove.com.br:8091",
+    "zipServerUrl": "cluster.roberlove.com.br:2001"
+  },
+  "requestContext": {
+    "resourceId": "mpbvkk",
+    "resourcePath": "/bankStatuses/leadId/{leadId}/bank/{bank}",
+    "httpMethod": "GET",
+    "extendedRequestId": "CZYbFGY0GjQFaOg=",
+    "requestTime": "30/Oct/2019:21:58:18 +0000",
+    "path": "/v1/staging/bankStatuses/leadId/1/bank/santander",
+    "accountId": "705296283647",
+    "protocol": "HTTP/1.1",
+    "stage": "staging",
+    "domainPrefix": "api-partner",
+    "requestTimeEpoch": 1572472698034,
+    "requestId": "cffc4bc7-26f8-465c-9133-da85284e3bb3",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "187.37.217.26",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "PostmanRuntime/7.18.0",
+      "user": null
+    },
+    "domainName": "api-partner.roberlove.com.br",
+    "apiId": "sbswzg50ca"
+  },
+  "body": "{\"key\":\"value\"}",
+  "isBase64Encoded": false
+}
