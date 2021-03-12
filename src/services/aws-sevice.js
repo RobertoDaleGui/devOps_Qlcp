@@ -1,10 +1,9 @@
 'use strict';
 const awsApi = require('../apis/aws-api');
 const awsFactory = require('../factory/aws-factory')
-const { v4: uuid } = require('uuid')
-const { owner } = require('../utils/keysFromJWT')
 const { objToDynamo } = require('../utils/aws-utils')
 const errorParser = require('../utils/error-parser')
+const { httpFactory } = require('../factory/responses/httpFactory')
 
 async function getTableItem (table, key, value, fields) {
   const params = awsFactory.tableItem(table, key, value, fields);
@@ -29,19 +28,29 @@ async function getTableList (TableName, Limit, ExclusiveStartKey, fields, _old =
     })
 }
 
-async function setTableItem (TableName, key, { body, ...event }, validator) {
-  return validator(JSON.parse(body))
+async function setTableItem (TableName, data, key, validator) {
+  return validator(data)
     .then(res => {
-      const params = {
-        TableName,
-        Item: { [key]: uuid(), active: true, owner: owner(event), ...res }
-      };
-      return awsApi.dynamoPut(params)
-    }).catch(err => { throw err })
+      return getTableItem(TableName, key, res[key])
+        .then(res => {
+          if (res.Count) {
+            throw httpFactory('O e-mail informado já está sendo usado por outro usuário', 409)
+          }
+          const params = {
+            TableName,
+            Item: { active: true, ...res }
+          };
+          return awsApi.dynamoPut(params)
+        })
+    })
+    .catch(err => {
+      if (err.details) throw httpFactory(err.details, 400)
+      throw httpFactory(JSON.parse(err.body), err.statusCode)
+    })
 }
 
 async function editTableItemAttribute (TableName, Key, data, validator) {
-  return validator(JSON.parse(data))
+  return validator(data)
     .then(res => {
       const dynamoDataObj = objToDynamo(res, Key)
       const param = {
@@ -62,3 +71,4 @@ module.exports = {
   getTableList,
   editTableItemAttribute
 }
+

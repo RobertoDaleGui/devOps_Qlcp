@@ -1,0 +1,41 @@
+{
+  "name": "devops_qlcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --coverage --colors",
+    "lint-staged": "lint-staged",
+    "debug": "node ./bin/shelljs-debug.js"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add",
+      "jest --bail --findRelatedTests"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^24.9.0",
+    "aws-sdk": "^2.861.0",
+    "eslint": "^6.7.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.5",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^24.9.0",
+    "lint-staged": "3.3.1",
+    "pre-commit": "^1.2.2",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-swagger-api": "^1.1.0",
+    "shelljs": "^0.8.3"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "joi": "^17.4.0",
+    "jwt-simple": "^0.5.6",
+    "serverless-domain-manager": "^4.0.0"
+  }
+}
