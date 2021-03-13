@@ -57,6 +57,8 @@ paths:
       description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário.<br>Não enviar payload!"
       tags: 
         - "Usuário"
+      security:
+      - auth: []
       parameters:
       - name: "limit"
         in: "query"
@@ -88,6 +90,8 @@ paths:
       description: "Essa rota tem como finalidade a listagem de usuários criados pelo usuário."
       tags: 
         - Usuário
+      security:
+      - auth: []
       requestBody:
         required: true
         content:
@@ -120,6 +124,8 @@ paths:
       description: "Essa rota tem como finalidade retornar um usuário informando o seu id.<br>Não enviar payload!"
       tags: 
         - Usuário
+      security:
+      - auth: []
       parameters:
       - name: "email"
         in: "path"
@@ -147,6 +153,8 @@ paths:
       description: "Essa rota tem como finalidade a edição de um usuário."
       tags: 
         - Usuário
+      security:
+      - auth: []
       parameters:
       - name: "email"
         in: "path"
@@ -185,6 +193,8 @@ paths:
       description: "Essa rota tem como finalidade exclusão de um usuário."
       tags: 
         - Usuário
+      security:
+      - auth: []
       parameters:
       - name: "email"
         in: "path"
@@ -327,13 +337,13 @@ components:
           type: "string"
           description: "Nome do usuário."
           example: "Fulano de Tal"
-        email:
-          type: "string"
-          description: "E-mail do usuário."
-          example: "fulano@detal.com"
-    editPassword:
-      properties:
         password:
           type: "string"
-          description: "Nova senha do usuário"
-          example: "MinhaNovaSenha[123]"
+          description: "Senha do usuário."
+          example: "OutraSenha[123]"
+
+  securitySchemes:
+    auth:
+      type: "http"
+      scheme: bearer
+      bearerFormat: JWT
