@@ -8,15 +8,13 @@ const jwt = require('jwt-simple')
 
 async function login (event) {
   const secretKey = await awsService.getsecretKey()
-  console.log(event)
+  console.log('Event: ', event)
   const body = JSON.parse(event.body)
   return validator.login(body)
     .then(() => {
-      console.log('Etapa 1')
       const { email, password } = body
       return awsService.getTableItem(table, 'email', email)
         .then(async res => {
-          console.log('Etapa 2: ', res)
           const user = res.Items[0]
           if (res.Count === 1) {
             const validPassword = await bcrypt.compare(password, res.Items[0].password)
@@ -25,7 +23,7 @@ async function login (event) {
               email: user.email,
               name: user.name
             }
-            const hash = jwt.encode(hashObj, secretKey)
+            const hash = await jwt.encode(hashObj, secretKey)
             return httpFactory(hash, 200)
           }
           return httpFactory('E-mail ou senha inválidos', 401)
