@@ -7,6 +7,7 @@ const validator = require('../validators/login')
 const jwt = require('jwt-simple')
 
 async function login (event) {
+  const secretKey = await awsService.getsecretKey()
   console.log(event)
   const body = JSON.parse(event.body)
   return validator.login(body)
@@ -24,7 +25,7 @@ async function login (event) {
               email: user.email,
               name: user.name
             }
-            const hash = jwt.encode(hashObj, process.env.JWT_SECRET)
+            const hash = jwt.encode(hashObj, secretKey)
             return httpFactory(hash, 200)
           }
           return httpFactory('E-mail ou senha inválidos', 401)
@@ -34,10 +35,11 @@ async function login (event) {
 }
 
 async function tokenValidator (data) {
+  const secretKey = await awsService.getsecretKey()
   if (!data) return false
   const token = data.replace(/bearer /i, '')
   return new Promise((resolve, reject) => {
-    jwt.decode(token, process.env.JWT_SECRET)
+    jwt.decode(token, secretKey)
     resolve()
   })
     .then(() => true)

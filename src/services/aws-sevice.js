@@ -65,10 +65,15 @@ async function editTableItemAttribute (TableName, Key, data, validator) {
     }).catch(err => { throw errorParser(err) })
 }
 
+async function getsecretKey () {
+  return awsApi.getSecretMng(process.env.SECRET_NAME)
+    .then(res => JSON.parse(res.SecretString)[`secretKey-${process.env.STAGE}`])
+}
+
 module.exports = {
   setTableItem,
   getTableItem,
   getTableList,
-  editTableItemAttribute
+  editTableItemAttribute,
+  getsecretKey
 }
-
