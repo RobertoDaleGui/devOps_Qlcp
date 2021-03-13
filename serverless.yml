@@ -39,6 +39,11 @@ provider:
         - dynamodb:GetItem
       Resource:
         - "arn:aws:dynamodb:sa-east-1:147813450025:table/${self:provider.environment.TB_USER}"
+    - Effect: "Allow"
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: 
+        - arn:aws:secretsmanager:sa-east-1:147813450025:secret:loginSecretKey-yLsHtH
 
 functions:
 # Autenticação/Login
