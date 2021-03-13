@@ -7,13 +7,10 @@ custom:
     port: 6000
   staging:
     stage: staging
-    jwtSecret: U2FsdGVkX1/+/tmm0wyWQ4nhNMpaR5FC3NdPBrcmFsI=
   production:
     stage: production
-    jwtSecret: U2FsdGVkX1/+/tmm0wyWQ4nhNMpaR5FC3NdPBrcmFsI=
   beta:
     stage: beta
-    jwtSecret: U2FsdGVkX1/+/tmm0wyWQ4nhNMpaR5FC3NdPBrcmFsI=
   swaggerApi:
     swagger: ${file(docs/swagger.yaml)}
 
@@ -26,7 +23,7 @@ provider:
     AWS_DEPLOY_REGION: ${self:custom.region}
     AWS_DYNAMODB_VERSION: '2012-08-10'
     TB_USER: Users-${self:custom.${self:custom.stage}.stage}
-    JWT_SECRET: ${self:custom.${self:custom.stage}.jwtSecret}
+    SECRET_NAME: loginSecretKey
     STAGE: ${self:custom.${self:custom.stage}.stage}
   # deploymentBucket:
   #   name: serverless.roberlove.deployment
